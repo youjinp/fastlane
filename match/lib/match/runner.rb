@@ -169,6 +169,9 @@ module Match
         self.files_to_commit << private_key_path
       else
         cert_path = certs.last
+        TODO Why does this make sense here to pick the last one?
+
+        TODO Warn here if there are more certificates available than expected. This will lead to unexpected problems like https://github.com/fastlane/fastlane/issues/14711
 
         # Check validity of certificate
         if Utils.is_cert_valid?(cert_path)
@@ -230,6 +233,8 @@ module Match
       # Install the provisioning profiles
       profile = profiles.last
 
+      TODO check if profile is actually for certificate_id, warn or fail if otherwise
+
       if params[:force_for_new_devices] && !params[:readonly]
         if prov_type != :appstore
           params[:force] = device_count_different?(profile: profile, keychain_path: keychain_path, platform: params[:platform].to_sym) unless params[:force]
@@ -281,7 +286,6 @@ module Match
       Utils.fill_environment(Utils.environment_variable_name(app_identifier: app_identifier,
                                                                        type: prov_type,
                                                                    platform: params[:platform]),
-
                              uuid)
 
       # TeamIdentifier is returned as an array, but we're not sure why there could be more than one
